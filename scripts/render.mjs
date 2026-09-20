@@ -151,6 +151,32 @@ function escape(value) {
     .replaceAll('"', "&quot;");
 }
 
+function pathParts(pathname) {
+  if (pathname === "/" || pathname === "/404.html") return [];
+  return pathname.replace(/\/$/, "").split("/").filter(Boolean);
+}
+
+function rel(fromPath, toPath) {
+  if (!toPath.startsWith("/")) return toPath;
+  const from = pathParts(fromPath);
+  const to = pathParts(toPath);
+  let index = 0;
+  while (index < from.length && index < to.length && from[index] === to[index]) {
+    index += 1;
+  }
+  const up = "../".repeat(from.length - index);
+  const down = to.slice(index).join("/");
+  const trailing = toPath.endsWith("/") || toPath === "/" ? "/" : "";
+  if (!up && !down) return trailing === "/" ? "./" : toPath.split("/").pop();
+  return `${up}${down}${down ? trailing : ""}` || "./";
+}
+
+function rebase(fromPath, html) {
+  return html.replace(/(href|src|action|data-endpoint)="(\/[^"]*)"/g, (_, attr, target) => {
+    return `${attr}="${rel(fromPath, target)}"`;
+  });
+}
+
 function navItems(path) {
   const items = [
     ["/approach/", "Approach"],
@@ -693,7 +719,7 @@ function writePage(page) {
   const urlPath = page.path.endsWith(".html") ? page.path : page.path.endsWith("/") ? `${page.path}index.html` : `${page.path}/index.html`;
   const target = join(dist, urlPath.replace(/^\//, ""));
   mkdirSync(dirname(target), { recursive: true });
-  writeFileSync(target, layout(page));
+  writeFileSync(target, rebase(page.path, layout(page)));
 }
 
 rmSync(dist, { recursive: true, force: true });
