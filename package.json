@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/render.mjs",
-    "dev": "node scripts/render.mjs && python3 -m http.server 4177 --directory dist",
-    "preview": "python3 -m http.server 4177 --directory dist"
+    "dev": "node scripts/render.mjs && node scripts/preview.mjs",
+    "preview": "node scripts/preview.mjs"
   }
 }
