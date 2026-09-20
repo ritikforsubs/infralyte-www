@@ -13,12 +13,17 @@ async function postForm(form, statusEl, endpoint) {
   statusEl.classList.remove("error");
   statusEl.textContent = "Sending…";
   try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { Accept: "application/json" },
       body: data,
+      signal: controller.signal,
     });
-    if (!response.ok) {
+    clearTimeout(timer);
+    const type = response.headers.get("content-type") || "";
+    if (!response.ok || !type.includes("application/json")) {
       throw new Error("Request failed");
     }
     form.reset();
