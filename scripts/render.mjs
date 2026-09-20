@@ -1020,6 +1020,7 @@ ${pageHero({
           </select>
         </label>
         <label>Message <textarea name="message" required placeholder="Organisation, public website, and the workflow that hurts."></textarea></label>
+        <div class="decoy" aria-hidden="true"><label>Company website <input name="company_url" tabindex="-1" autocomplete="off"></label></div>
         <button class="btn btn-primary" type="submit">Send</button>
         <p class="form-status" role="status" aria-live="polite"></p>
         <p class="form-aside">Prefer plain email? Write to <a href="mailto:${brand.email}">${brand.email}</a> and it reaches the same place.</p>

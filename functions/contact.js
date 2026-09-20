@@ -68,6 +68,14 @@ export async function onRequestPost({ request, env }) {
     return fail(request, 400, "Send this as a form post.");
   }
 
+  // Hidden decoy field. Only a bot fills it, so accept and discard rather than
+  // returning an error the bot could learn from.
+  if (String(form.get("company_url") || "").trim()) {
+    return wantsJson(request)
+      ? Response.json({ ok: true })
+      : Response.redirect(new URL("/contact/?sent=1", request.url), 303);
+  }
+
   const name = String(form.get("name") || "").trim();
   const email = String(form.get("email") || "").trim().toLowerCase();
   const message = String(form.get("message") || "").trim();

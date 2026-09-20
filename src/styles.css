@@ -1301,6 +1301,16 @@ textarea:focus {
   justify-self: start;
 }
 
+/* Bot trap. Real people never see or tab into this; submissions that fill it
+   are dropped in functions/contact.js. */
+.decoy {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .form-status {
   min-height: 1.35rem;
   margin: 0;
