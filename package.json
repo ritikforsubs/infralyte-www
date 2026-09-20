@@ -1,0 +1,12 @@
+{
+  "name": "infralyte-www",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Public website for Infralyte — AI into existing products and operations.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/render.mjs",
+    "dev": "node scripts/render.mjs && python3 -m http.server 4177 --directory dist",
+    "preview": "python3 -m http.server 4177 --directory dist"
+  }
+}

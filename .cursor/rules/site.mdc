@@ -1,0 +1,12 @@
+---
+description: Public Infralyte website — self-hosted, no Lovable, offer and unsubscribe pages.
+alwaysApply: true
+---
+
+# infralyte-www
+
+- This is a from-scratch site. No Lovable components, CSS, meta tags, or hosting.
+- Do not add `lovable.app` links, including for GharBazaar, FlowSpeak, or Briefly.
+- Keep `/unsubscribe/`, `/scan/`, and `/offers/*` as real HTTPS pages.
+- Do not name confidential customers or claim 20 AI transformations.
+- Draft outreach only; this repo must not send email.
