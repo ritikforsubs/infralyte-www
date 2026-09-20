@@ -1,3 +1,8 @@
 name = "infralyte-www"
 compatibility_date = "2026-09-20"
 pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+binding = "INBOX"
+id = "0ff984a2def947c683ace373231e960d"
+preview_id = "1eb6fcb516f748f3b82d3ae179e8d0ba"

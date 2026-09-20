@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /unsubscribe
 
-Sitemap: https://www.infralyte.com/sitemap.xml
+Sitemap: https://www.infralyte.in/sitemap.xml

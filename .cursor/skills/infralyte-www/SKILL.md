@@ -1,14 +1,15 @@
 ---
 name: infralyte-www
-description: Build, preview, and deploy the self-hosted Infralyte marketing site. Never use Lovable.
+description: Build, verify, preview, and deploy the self-hosted Infralyte marketing site. Never use Lovable.
 ---
 
 # Infralyte website
 
 ```bash
 cd ~/Desktop/infralyte-www
-npm run build
-npm run preview
+npm run build      # render dist/
+npm run check      # link/asset/form-target/anchor check — must pass before deploy
+npm run preview    # http://127.0.0.1:4177/
 ```
 
 Deploy with Cloudflare Pages, not Lovable:
@@ -17,4 +18,29 @@ Deploy with Cloudflare Pages, not Lovable:
 npx wrangler pages deploy dist --project-name infralyte-www
 ```
 
-Public URL target: `https://www.infralyte.com/`. Unsubscribe must stay at `/unsubscribe/`.
+Public URL target: `https://www.infralyte.in/`. Unsubscribe must stay at
+`/unsubscribe/`. Workspace mail is `hello@infralyte.in` (never `.com`).
+
+## Layout
+
+- `scripts/render.mjs` — all pages, offer and industry data, shared layout.
+- `src/styles.css` — the whole design system.
+- `src/site.js` — mobile menu, scroll reveal, card spotlight, form posting.
+- `functions/` — Pages Functions for `/contact` and `/unsubscribe`.
+- `scripts/og-template.html` — source for `public/og.png` (regen command inside).
+
+Form targets must stay root-absolute. `rebase()` in `render.mjs` deliberately
+rewrites only `href` and `src`; relativising `action` turns `/contact` into
+`/contact/contact` and the form silently stops posting.
+
+## Secrets (Cloudflare Pages project settings)
+
+| Name | Purpose |
+|---|---|
+| `RESEND_API_KEY` | send one notification per inbound enquiry |
+| `MAIL_TO` | internal recipient, defaults to `hello@infralyte.in` |
+| `MAIL_FROM` | verified Resend sender |
+| `CONTACT_WEBHOOK` | optional extra forward |
+
+Without `RESEND_API_KEY` enquiries are stored only. Read them with
+`bash scripts/list-contacts.sh`; opt-outs with `bash scripts/list-unsubscribes.sh`.

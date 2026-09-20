@@ -9,4 +9,9 @@ alwaysApply: true
 - Do not add `lovable.app` links, including for GharBazaar, FlowSpeak, or Briefly.
 - Keep `/unsubscribe/`, `/scan/`, and `/offers/*` as real HTTPS pages.
 - Do not name confidential customers or claim 20 AI transformations.
-- Draft outreach only; this repo must not send email.
+- Draft outreach only. This repo never sends outreach or bulk email.
+- One exception: `functions/contact.js` may send a single transactional
+  notification of an inbound enquiry to our own mailbox (`MAIL_TO`). The
+  visitor's address is only ever `reply_to`, never `to`, so this path cannot be
+  used to mail a prospect. Do not add any other sending path.
+- Workspace and contact mail is `hello@infralyte.in`. Never `infralyte.com`.

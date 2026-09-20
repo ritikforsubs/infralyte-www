@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/render.mjs",
+    "check": "node scripts/check-links.mjs",
     "dev": "node scripts/render.mjs && node scripts/preview.mjs",
     "preview": "node scripts/preview.mjs"
   }
