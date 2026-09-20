@@ -562,6 +562,11 @@ textarea:focus {
   border-top: 1px solid var(--line);
   color: var(--dim);
   font-size: 0.82rem;
+  max-width: none;
+}
+
+.legal span {
+  max-width: 40rem;
 }
 
 .page-hero {

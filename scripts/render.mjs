@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,6 +6,20 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const site = "https://www.infralyte.com";
 const year = new Date().getFullYear();
+const brand = {
+  legalName: "Infralyte Technologies",
+  phoneDisplay: "+91 6265 040 463",
+  phoneTel: "+916265040463",
+  email: "hello@infralyte.com",
+  gstin: "22BREPA1247F1ZK",
+  studio: "Raipur, Chhattisgarh, India",
+  registeredOffice:
+    "Akhrabhatha, Ward No. 10, C/O Natwar Lal Agrawal, Sakti, District Sakti, Chhattisgarh 495689, India",
+};
+const markSvg = `<svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="12" fill="#d7b56d"/>
+          <path fill="#0a0b09" d="M18 13h28v6.2H37.2V44.8H46V51H18v-6.2h8.8V19.2H18z"/>
+        </svg>`;
 
 const offers = [
   {
@@ -195,7 +209,7 @@ function navItems(path) {
 
 function layout({ path, title, description, body }) {
   const canonical = `${site}${path}`;
-  const fullTitle = path === "/" ? "Infralyte — AI in the work you already run" : `${title} — Infralyte`;
+  const fullTitle = path === "/" ? "Infralyte Technologies — AI in the work you already run" : `${title} — Infralyte`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -208,7 +222,7 @@ function layout({ path, title, description, body }) {
   <meta property="og:description" content="${escape(description)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${canonical}">
-  <meta property="og:site_name" content="Infralyte">
+  <meta property="og:site_name" content="${escape(brand.legalName)}">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.bunny.net">
@@ -217,16 +231,22 @@ function layout({ path, title, description, body }) {
   <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "Infralyte",
+    name: brand.legalName,
+    alternateName: "Infralyte",
     url: site,
-    email: "hello@infralyte.com",
-    telephone: "+916265040463",
+    email: brand.email,
+    telephone: brand.phoneTel,
+    vatID: brand.gstin,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Raipur",
+      streetAddress: "Akhrabhatha, Ward No. 10, C/O Natwar Lal Agrawal",
+      addressLocality: "Sakti",
       addressRegion: "Chhattisgarh",
+      postalCode: "495689",
       addressCountry: "IN",
     },
+    areaServed: "Worldwide",
+    numberOfEmployees: { "@type": "QuantitativeValue", minValue: 8, maxValue: 12 },
     description,
   })}</script>
 </head>
@@ -234,10 +254,7 @@ function layout({ path, title, description, body }) {
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="mark" href="/">
-        <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
-          <rect width="64" height="64" rx="14" fill="#d7b56d"/>
-          <path fill="#0a0b09" d="M18 14h28v7.2H36.4V50H27.6V21.2H18z"/>
-        </svg>
+        ${markSvg}
         Infralyte
       </a>
       <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Open menu">☰</button>
@@ -251,7 +268,7 @@ function layout({ path, title, description, body }) {
   <footer class="site-footer">
     <div class="wrap footer-grid">
       <div>
-        <h2>Infralyte</h2>
+        <h2>Infralyte Technologies</h2>
         <p>We build AI into existing products and operations. Frontier models when they fit, private models when data cannot leave.</p>
       </div>
       <div class="footer-col">
@@ -263,18 +280,19 @@ function layout({ path, title, description, body }) {
       <div class="footer-col">
         <a href="/careers/">Careers</a>
         <a href="/studio/">Studio</a>
+        <a href="/legal/">Legal</a>
         <a href="/privacy/">Privacy</a>
         <a href="/unsubscribe/">Unsubscribe</a>
       </div>
       <div class="footer-col">
-        <a href="mailto:hello@infralyte.com">hello@infralyte.com</a>
-        <a href="tel:+916265040463">+91 6265 040 463</a>
-        <span>Raipur, Chhattisgarh</span>
+        <a href="mailto:${brand.email}">${brand.email}</a>
+        <a href="tel:${brand.phoneTel}">${brand.phoneDisplay}</a>
+        <span>Studio · ${brand.studio}</span>
       </div>
     </div>
     <div class="wrap legal">
-      <span>© ${year} Infralyte. All rights reserved.</span>
-      <span>Draft outreach only. We do not buy or scrape personal inboxes.</span>
+      <span>© ${year} ${escape(brand.legalName)}. GSTIN ${brand.gstin}.</span>
+      <span>${escape(brand.registeredOffice)}</span>
     </div>
   </footer>
   <script src="/site.js"></script>
@@ -297,9 +315,9 @@ add(
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="eyebrow">Infralyte · Raipur / worldwide</p>
+        <p class="eyebrow">Infralyte Technologies · Raipur studio / worldwide</p>
         <h1>AI, built into the work you already run.</h1>
-        <p class="lede">We research how a business actually operates, name one bounded workflow worth changing, and prove it in a two-to-four week pilot. No transformation theatre. No bulk email.</p>
+        <p class="lede">We research how a business actually operates, name one bounded workflow worth changing, and prove it in a two-to-four week pilot. We use AI to build AI, so work that used to take a quarter can ship in weeks. No transformation theatre. No bulk email.</p>
         <div class="actions">
           <a class="btn btn-primary" href="/scan/">Request an Opportunity Scan</a>
           <a class="btn btn-ghost" href="/approach/">See how we work</a>
@@ -360,9 +378,9 @@ add(
   <section class="section">
     <div class="wrap split">
       <div>
-        <p class="eyebrow">Proof, without name-dropping</p>
-        <h2>Technology work across 20+ engagements.</h2>
-        <p class="lede">We have delivered software and data work across multiple sectors. We do not claim twenty AI transformations, and we do not name confidential customers.</p>
+        <p class="eyebrow">What is true</p>
+        <h2>A compact engineering company with its own private-model lab.</h2>
+        <p class="lede">Infralyte Technologies is a services firm of about ten engineers. We have delivered software and data work across 20+ engagements. We do not claim twenty AI transformations, and we do not name confidential customers. Private work can run on our NVIDIA DGX and Apple Silicon lab when data cannot leave.</p>
       </div>
       <div class="note">If a case study cannot be told without a client’s permission, it stays off this site and out of outreach. That is a commercial constraint, not a slogan.</div>
     </div>
@@ -398,6 +416,7 @@ add(
       <h2>What you get</h2>
       <p>A customized recommendation on top of a reusable method. We do not arrive with a single product and then hunt for a place to put it.</p>
       <p>Individual professionals can receive a productized workspace and onboarding. Mid-market organisations receive workflow integrations. Enterprises receive governance, private deployment, SSO, evaluations, and staged rollout.</p>
+      <p>We already run document-heavy operations and agentic workflows internally. That is how we stay fast: we use AI to build AI. When a client cannot send data to a public model, the same lab that serves our own work — NVIDIA DGX Spark plus Apple Silicon — is how we prove a private path.</p>
       <h2>What we will not do</h2>
       <ul>
         <li>Auto-send outreach, scrape personal inboxes, or buy leaked lists.</li>
@@ -587,7 +606,7 @@ add(
     <div class="wrap">
       <p class="eyebrow">On-site · Raipur, Chhattisgarh</p>
       <h1>Start here. Work on real systems.</h1>
-      <p class="lede">We hire people who want to learn on production work — client workflows, private models, and our own products. These seats are for freshers, on site in Raipur.</p>
+      <p class="lede">We're looking for people who want to learn on production work — client workflows, private models, and our own products. The team is small, on site in Raipur, and already running its own NVIDIA and Apple Silicon lab.</p>
     </div>
   </section>
   <section class="section">
@@ -631,6 +650,7 @@ add(
         <div><dt>Email</dt><dd><a href="mailto:hello@infralyte.com">hello@infralyte.com</a></dd></div>
         <div><dt>Phone</dt><dd><a href="tel:+916265040463">+91 6265 040 463</a></dd></div>
         <div><dt>Studio</dt><dd>Raipur, Chhattisgarh, India</dd></div>
+        <div><dt>Registered office</dt><dd>Akhrabhatha, Ward No. 10, C/O Natwar Lal Agrawal, Sakti, District Sakti, Chhattisgarh 495689, India</dd></div>
         <div><dt>Unsubscribe</dt><dd><a href="/unsubscribe/">www.infralyte.com/unsubscribe</a></dd></div>
       </dl>
       <form class="form" data-endpoint="/contact" data-fallback="hello@infralyte.com" data-success="Received. We will reply from hello@infralyte.com.">
@@ -681,7 +701,7 @@ add(
 add(
   "/privacy/",
   "Privacy",
-  "Infralyte privacy notice for the public website, contact form, and unsubscribe requests.",
+  "Infralyte Technologies privacy notice for the public website, contact form, and unsubscribe requests.",
   `
   <section class="page-hero">
     <div class="wrap">
@@ -691,10 +711,41 @@ add(
   </section>
   <section class="section">
     <div class="wrap prose">
-      <p>This site is operated by Infralyte in Raipur, India. Contact: <a href="mailto:hello@infralyte.com">hello@infralyte.com</a>.</p>
+      <p>This site is operated by ${escape(brand.legalName)}. Contact: <a href="mailto:${brand.email}">${brand.email}</a>. Studio: ${escape(brand.studio)}. Registered office: ${escape(brand.registeredOffice)}.</p>
       <p>We collect what you send us: contact-form fields, unsubscribe requests, and ordinary web logs. We use that information to reply, to honour opt-outs, and to keep the site working. We do not sell it.</p>
       <p>Unsubscribe requests are kept so we can honour them permanently. We do not use hidden tracking pixels in this marketing site, and we do not run advertising cookies.</p>
       <p>If we research a public organisation, we use pages that organisation already published. We do not collect personal inboxes or leaked lists.</p>
+    </div>
+  </section>
+`,
+);
+
+add(
+  "/legal/",
+  "Legal",
+  "Legal identity for Infralyte Technologies, including GSTIN and registered office.",
+  `
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Company</p>
+      <h1>Legal identity.</h1>
+      <p class="lede">The public brand is Infralyte. The trading name is Infralyte Technologies.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap split">
+      <dl class="meta-list">
+        <div><dt>Legal name</dt><dd>${escape(brand.legalName)}</dd></div>
+        <div><dt>GSTIN</dt><dd>${brand.gstin}</dd></div>
+        <div><dt>Studio</dt><dd>${escape(brand.studio)}</dd></div>
+        <div><dt>Registered office</dt><dd>${escape(brand.registeredOffice)}</dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:${brand.email}">${brand.email}</a></dd></div>
+        <div><dt>Phone</dt><dd><a href="tel:${brand.phoneTel}">${brand.phoneDisplay}</a></dd></div>
+      </dl>
+      <div class="prose">
+        <p>Outreach from Infralyte uses a Workspace mailbox, this postal address, and <a href="/unsubscribe/">https://www.infralyte.com/unsubscribe/</a>. Opt-outs are permanent.</p>
+        <p>Confidential consulting customers are never named here or in outbound mail without permission.</p>
+      </div>
     </div>
   </section>
 `,
@@ -729,13 +780,22 @@ for (const page of pages) {
   writePage(page);
 }
 
+function copyPublic(from, to) {
+  mkdirSync(to, { recursive: true });
+  for (const name of readdirSync(from)) {
+    const src = join(from, name);
+    const dest = join(to, name);
+    if (statSync(src).isDirectory()) {
+      copyPublic(src, dest);
+    } else {
+      copyFileSync(src, dest);
+    }
+  }
+}
+
 writeFileSync(join(dist, "styles.css"), readFileSync(join(root, "src/styles.css")));
 writeFileSync(join(dist, "site.js"), readFileSync(join(root, "src/site.js")));
-
-const publicDir = join(root, "public");
-for (const file of readdirSync(publicDir)) {
-  copyFileSync(join(publicDir, file), join(dist, file));
-}
+copyPublic(join(root, "public"), dist);
 
 const sitemapUrls = pages
   .filter((page) => page.path !== "/404.html")
