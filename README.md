@@ -40,18 +40,34 @@ this is never an outreach path. Set these as Pages project secrets:
 Until the key is set, nothing is emailed. Read the queue with
 `bash scripts/list-contacts.sh`.
 
-## Known issue: outbound mail authentication
+## Mail authentication
 
-`infralyte.in` receives fine (Google Workspace MX is live), but sending is not
-authenticated:
+`infralyte.in` receives on Google Workspace MX. Sending state:
 
-- SPF is `v=spf1 include:dc-aa8e722993._spfm.infralyte.in ~all` and that include
-  host returns **NXDOMAIN**, so SPF evaluates to a PermError.
-- No DKIM key is published on the common selectors.
-- DMARC is `p=quarantine` with `rua` pointing at `onsecureserver.net`.
+| Check | Status |
+|---|---|
+| SPF | `v=spf1 include:_spf.google.com ~all` — 1 of 10 DNS lookups, authorises Workspace |
+| DMARC | `p=quarantine`, `rua=mailto:hello@infralyte.in` |
+| DKIM | **not published** — see below |
 
-Replies from `hello@infralyte.in` can therefore be quarantined. Fix the DNS
-before relying on email for enquiries or outreach.
+SPF was previously `include:dc-aa8e722993._spfm.infralyte.in`, a leftover
+registrar record whose include host returns NXDOMAIN. That made SPF a PermError,
+so mail from `hello@infralyte.in` failed DMARC under `p=quarantine`. Replaced
+2026-09-21; a zone backup sits in `~/Desktop/infralyte-mocks/dns-backup/`.
+
+DMARC now passes on SPF alone, because Workspace sends with an envelope sender on
+this domain and `aspf=r` allows relaxed alignment. **DKIM is still outstanding**
+and matters because SPF breaks when a message is forwarded. Generate the key in
+Google Admin console under *Apps → Google Workspace → Gmail → Authenticate
+email*, then publish the value it gives you at `google._domainkey.infralyte.in`.
+Only the Admin console can mint that key.
+
+### If you enable Resend
+
+Verify a subdomain in Resend (`send.infralyte.in`) rather than the root, and set
+`MAIL_FROM` to an address on it. Resend's own SPF and DKIM records then live on
+that subdomain and the root SPF stays Google-only. Setting `MAIL_FROM` to
+`hello@infralyte.in` without verifying the root domain in Resend will fail.
 
 ## Hosting
 

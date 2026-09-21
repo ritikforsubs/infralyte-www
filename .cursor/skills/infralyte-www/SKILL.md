@@ -39,7 +39,7 @@ rewrites only `href` and `src`; relativising `action` turns `/contact` into
 |---|---|
 | `RESEND_API_KEY` | send one notification per inbound enquiry |
 | `MAIL_TO` | internal recipient, defaults to `hello@infralyte.in` |
-| `MAIL_FROM` | verified Resend sender |
+| `MAIL_FROM` | verified Resend sender — use an address on `send.infralyte.in`, not the root domain |
 | `CONTACT_WEBHOOK` | optional extra forward |
 
 Without `RESEND_API_KEY` enquiries are stored only. Read them with
