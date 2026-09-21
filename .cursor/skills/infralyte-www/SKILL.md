@@ -44,3 +44,23 @@ rewrites only `href` and `src`; relativising `action` turns `/contact` into
 
 Without `RESEND_API_KEY` enquiries are stored only. Read them with
 `bash scripts/list-contacts.sh`; opt-outs with `bash scripts/list-unsubscribes.sh`.
+
+## Credentials
+
+**This repository is public.** No token, key, or `.env` value goes in it, in
+`.cursor/`, or in the fleet `~/Desktop/push.cursor` mirror — that mirror is
+git-backed and would publish the secret.
+
+Cloudflare Pages and KV work through the wrangler OAuth login (`wrangler whoami`),
+which has no DNS scope. DNS edits need a separate token, scoped to
+Zone → DNS → Edit on `infralyte.in` and kept in the macOS Keychain on the single
+machine that needs it:
+
+```bash
+security add-generic-password -U -a "$USER" -s cloudflare-dns-infralyte -w
+TOKEN=$(bash scripts/cf-dns-token.sh)
+```
+
+Do not copy that token to other lab machines. A DNS-edit token can repoint MX and
+take over mail for the domain; one machine holding it limits the blast radius, and
+rotating it is then a single action.
